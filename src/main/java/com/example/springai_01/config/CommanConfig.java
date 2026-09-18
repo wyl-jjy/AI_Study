@@ -7,9 +7,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CommanConfig {
-    @Bean
+    @Bean("chatClient")
     public ChatClient chatClient(OllamaChatModel ollamaChatModel){
+        return ChatClient.builder(ollamaChatModel).build();
+    }
+
+    @Bean("chatClientFlux")
+    public ChatClient chatClientFlux(OllamaChatModel ollamaChatModel){
         return ChatClient.builder(ollamaChatModel)
-                .build(); //获取ChatClient 工厂实例
+                .defaultSystem("你是一个高级程序员")
+                .build();
     }
 }
