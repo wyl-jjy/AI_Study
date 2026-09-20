@@ -8,7 +8,9 @@ spring:
         model: qwen3:8b # 模型名称
         options:
           temperature: 0.8 # 模型温度，影响模型生成结果的随机性，越小越稳定
+          keep-alive: 30m # 避免 5 分钟后卸载模型导致反复冷启动（qwen3:8b 约 5.2GB）
+          num-ctx: 8192 # Ollama 默认上下文远小于模型上限 40960，长对话会被静默截断
 logging:
   level:
-    org.springframework.ai: debug # AI对话的日志级别
+    org.springframework.ai: info # 设为 debug 会打印 eval-duration 等元数据噪音
     com.example.springai_01: debug # 本项目的日志级别
