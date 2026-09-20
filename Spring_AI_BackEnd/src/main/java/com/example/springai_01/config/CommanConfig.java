@@ -28,9 +28,12 @@ public class CommanConfig {
     }
 
     @Bean("chatClientFlux")
-    public ChatClient chatClientFlux(OllamaChatModel ollamaChatModel) {
+    public ChatClient chatClientFlux(OllamaChatModel ollamaChatModel,ChatMemory chatMemory) {
         return ChatClient.builder(ollamaChatModel)
                 .defaultSystem("你是一个高级程序员")
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+                        new MessageChatMemoryAdvisor(chatMemory))
                 .build();
     }
 
