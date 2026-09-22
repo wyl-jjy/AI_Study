@@ -1,6 +1,6 @@
 package com.example.springai_01.controller;
 
-import com.example.springai_01.Interface.ChatHistoryRepository;
+import com.example.springai_01.service.ChatHistoryRepository;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;

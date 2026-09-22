@@ -1,7 +1,7 @@
 package com.example.springai_01.controller;
 
 import com.example.springai_01.Entity.Vo.MessageVO;
-import com.example.springai_01.Interface.ChatHistoryRepository;
+import com.example.springai_01.service.ChatHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;

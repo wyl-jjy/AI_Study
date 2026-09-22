@@ -1,4 +1,4 @@
-package com.example.springai_01.Interface;
+package com.example.springai_01.service;
 
 import java.util.List;
 

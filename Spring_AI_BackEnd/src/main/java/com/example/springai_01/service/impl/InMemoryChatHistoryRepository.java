@@ -1,6 +1,6 @@
-package com.example.springai_01.Interface.Impl;
+package com.example.springai_01.service.impl;
 
-import com.example.springai_01.Interface.ChatHistoryRepository;
+import com.example.springai_01.service.ChatHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
