@@ -3,6 +3,7 @@ package com.example.springai_01.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.springai_01.Entity.Po.Course;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -12,6 +13,7 @@ import com.example.springai_01.Entity.Po.Course;
  * @author author
  * @since 2026-09-22
  */
+
 public interface CourseMapper extends BaseMapper<Course> {
 
 }
