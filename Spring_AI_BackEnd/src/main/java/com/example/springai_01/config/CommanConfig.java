@@ -17,7 +17,7 @@ public class CommanConfig {
     /**
      * 该类中配置的chatClient的bean对象是springAI提供给应用层和chatmodel交互的端口。
      * controller配置的是一次从应用向ChatClient 发起的请求，chatClient再转发给大模型。
-     * **/
+     */
 
     /**
      * 记忆容器：1.1.x 起 InMemoryChatMemory 已移除，改用 MessageWindowChatMemory。

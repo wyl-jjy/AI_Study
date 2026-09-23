@@ -2,7 +2,7 @@ package com.example.springai_01.mapper;
 
 import com.example.springai_01.Entity.Po.CourseReservation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+
 
 /**
  * <p>
