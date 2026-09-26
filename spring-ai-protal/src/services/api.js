@@ -106,9 +106,9 @@ export const chatAPI = {
   async sendPdfMessage(prompt, chatId) {
     try {
       const response = await fetch(`${BASE_URL}/ai/pdf/chat?prompt=${encodeURIComponent(prompt)}&chatId=${chatId}`, {
-        method: 'GET',
-        // 确保使用流式响应
-        signal: AbortSignal.timeout(30000) // 30秒超时
+        method: 'GET'
+        // 注意：不要加 AbortSignal.timeout —— 本地 CPU 推理 + RAG 首 token 延迟远超 30s，
+        // 30s 超时会掐断流式请求，既导致"发送消息失败"，还会让后端/Ollama 堆积僵死任务
       })
 
       if (!response.ok) {

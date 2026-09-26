@@ -17,6 +17,8 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.stream.DoubleStream;
+
 @Configuration
 public class CommanConfig {
     /**
