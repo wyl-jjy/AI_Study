@@ -1,5 +1,11 @@
 package com.example.springai_01.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
+import com.example.springai_01.Entity.Po.ChatTypeRelate;
+import com.example.springai_01.Entity.Vo.Result;
+import com.example.springai_01.mapper.ChatTypeRelateMapper;
 import com.example.springai_01.service.ChatHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,6 +19,35 @@ import java.util.Map;
 public class InMemoryChatHistoryRepository implements ChatHistoryRepository {
 
     private final Map<String, List<String>> chatHistory;
+
+    //持久化到mysql(chatId-type)
+    private final ChatTypeRelateMapper chatTypeRelateMapper;
+
+
+    @Override
+    public void saveByJDBC(String type, String chatId) throws Exception {
+        if(type.isEmpty()||chatId.isEmpty()){
+            throw new Exception("type||chatId 存在空值");
+        }
+        int insertResult = chatTypeRelateMapper.insert(ChatTypeRelate
+                .builder()
+                .chatId(chatId)
+                .type(type)
+                .build());
+        if (insertResult == 0) {
+            throw new Exception("会话历史存入失败");
+        }
+    }
+
+    @Override
+    public List<String> getChatIdsByJDBC(String type) {
+
+//        QueryWrapper<ChatTypeRelate> selectByType = new QueryWrapper<>();
+//        selectByType.eq("type", type);
+//        List<ChatTypeRelate> list = chatTypeRelateMapper.selectList(selectByType);
+         List<String> chatIds = chatTypeRelateMapper.selectByType(type);
+         return chatIds==null ?List.of():chatIds;
+    }
 
     @Override
     public void save(String type, String chatId) {

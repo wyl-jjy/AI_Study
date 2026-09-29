@@ -44,9 +44,15 @@ public class ChatController {
      * 注意：prompt 设为非必填，否则前端"只传附件不输文字"会被 Spring 直接拒绝（400）。
      */
     @RequestMapping(path = "/chat-flux", produces = "text/html;charset=UTF-8")
-    public Flux<String> chatFlux(@RequestParam(defaultValue = "") String prompt, String chatId) {
-        // 保存会话ID，供前端历史列表使用
-        chatHistoryRepository.save("chat", chatId);
+    public Flux<String> chatFlux(@RequestParam(defaultValue = "") String prompt, String chatId) throws Exception {
+
+        chatHistoryRepository.saveByJDBC("chat",chatId);
+
+        /**
+         * // 保存会话ID，供前端历史列表使用
+         *    chatHistoryRepository.save("chat", chatId);
+         * **/
+
 
         return chatClientFlux.prompt(prompt)
                 // 1.1.x 常量迁移到 ChatMemory.CONVERSATION_ID（值不变：chat_memory_conversation_id）

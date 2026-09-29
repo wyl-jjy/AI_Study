@@ -22,7 +22,8 @@ public class ChatHistoryController {
 
     @GetMapping("/{type}")
     public List<String> getChatIds(@PathVariable String type){
-        return chatHistoryRepository.getChatIds(type);
+        return chatHistoryRepository.getChatIdsByJDBC(type);
+        //return chatHistoryRepository.getChatIds(type);
     }
 
     @GetMapping("/{type}/{chatId}")

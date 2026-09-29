@@ -2,6 +2,7 @@ package com.example.springai_01.config;
 
 import com.example.springai_01.constant.FunctionCallingPrompt;
 import com.example.springai_01.constant.PromptWord;
+import com.example.springai_01.service.impl.ChatMemoryJDBCRepository;
 import com.example.springai_01.tools.CourseTool;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -30,11 +31,16 @@ public class CommanConfig {
      * 记忆容器：1.1.x 起 InMemoryChatMemory 已移除，改用 MessageWindowChatMemory。
      * 只保留最近 20 条消息，避免上下文无限增长。
      */
+//    @Bean
+//    public ChatMemory chatMemory() {
+//        return MessageWindowChatMemory.builder()
+//                .maxMessages(20)
+//                .build();
+//    }
+
     @Bean
-    public ChatMemory chatMemory() {
-        return MessageWindowChatMemory.builder()
-                .maxMessages(20)
-                .build();
+    public ChatMemory chatMemory(ChatMemoryJDBCRepository chatMemoryJDBCRepository){
+        return chatMemoryJDBCRepository;
     }
 
     @Bean("chatClient")

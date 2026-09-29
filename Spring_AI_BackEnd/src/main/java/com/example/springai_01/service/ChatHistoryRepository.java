@@ -3,6 +3,13 @@ package com.example.springai_01.service;
 import java.util.List;
 
 public interface ChatHistoryRepository {
+
+    void saveByJDBC(String type,String chatId) throws Exception;
+
+
+    List<String> getChatIdsByJDBC(String type);
+
+
     /**
      * 保存会话记录
      * @param type 业务类型，如：chat、service、pdf
