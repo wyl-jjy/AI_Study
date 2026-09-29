@@ -31,13 +31,13 @@ public class ChatMemoryJDBCRepository implements ChatMemory {
     public void add(String conversationId, List<Message> messages) {
         Messagehistory messagehistory = new Messagehistory();
         for (Message message : messages) {
-            boolean res = messagehistoryMapper.insertOrUpdate(messagehistory
+            int res = messagehistoryMapper.insert(messagehistory
                     .setChatId(conversationId)
                     .setCreateTime(LocalDateTime.now())
                     .setMessageType(String.valueOf(message.getMessageType()))
                     .setMessage(message.getText())
             );
-            if(!res){
+            if(res==0){
                 log.debug("插入会话记忆失败");
             }
         }

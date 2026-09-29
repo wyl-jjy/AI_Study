@@ -29,12 +29,12 @@ public class InMemoryChatHistoryRepository implements ChatHistoryRepository {
         if(type.isEmpty()||chatId.isEmpty()){
             throw new Exception("type||chatId 存在空值");
         }
-        int insertResult = chatTypeRelateMapper.insert(ChatTypeRelate
+        boolean insertResult = chatTypeRelateMapper.insertOrUpdate(ChatTypeRelate
                 .builder()
                 .chatId(chatId)
                 .type(type)
                 .build());
-        if (insertResult == 0) {
+        if (!insertResult) {
             throw new Exception("会话历史存入失败");
         }
     }
