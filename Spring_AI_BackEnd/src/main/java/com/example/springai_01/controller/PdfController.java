@@ -74,13 +74,15 @@ public class PdfController {
     }
 
     @RequestMapping(value = "/chat", produces = "text/html;charset=UTF-8")
-    public Flux<String> chat(String prompt, String chatId) {
-        Resource file = fileService.getFile(chatId);
-        recordService.save("pdf", chatId);
+    public Flux<String> chat(String prompt, String chatId) throws Exception {
+        //Resource file = fileService.getFile(chatId);
+        //持久化到mysql
+        recordService.saveByJDBC("pdf",chatId);
+        //recordService.save("pdf", chatId);
         return pdfChatClient
                 .prompt(prompt)
                 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, chatId))
-                .advisors(a -> a.param(QuestionAnswerAdvisor.FILTER_EXPRESSION, "file_name == '"+file.getFilename()+"'"))
+                .advisors(a -> a.param(QuestionAnswerAdvisor.FILTER_EXPRESSION, "chat_id == '"+chatId+"'"))
                 .stream()
                 .content();
     }

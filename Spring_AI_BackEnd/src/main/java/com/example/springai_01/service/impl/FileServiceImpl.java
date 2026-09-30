@@ -28,7 +28,8 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class FileServiceImpl implements IFileService {
 
-    private final VectorStore vectorStore;
+//    private final VectorStore vectorStore;
+    private final VectorStoreByMongo vectorStoreByMongo;
 
     // 会话id 与 文件名的对应关系，方便查询会话历史时重新加载文件
     private final Properties chatFiles = new Properties();
@@ -68,20 +69,20 @@ public class FileServiceImpl implements IFileService {
                 throw new RuntimeException(e);
             }
         }
-        FileSystemResource vectorResource = new FileSystemResource("chat-pdf.json");
-        if (vectorResource.exists()) {
-            SimpleVectorStore simpleVectorStore = (SimpleVectorStore) vectorStore;
-            simpleVectorStore.load(vectorResource);
-        }
+//        FileSystemResource vectorResource = new FileSystemResource("chat-pdf.json");
+//        if (vectorResource.exists()) {
+//            SimpleVectorStore simpleVectorStore = (SimpleVectorStore) vectorStore;
+//            simpleVectorStore.load(vectorResource);
+//        }
     }
 
     @PreDestroy
     private void persistent() {
         try {
             chatFiles.store(new FileWriter("chat-pdf.properties"), LocalDateTime.now().toString());
-            if(vectorStore != null && vectorStore instanceof SimpleVectorStore simpleVectorStore) {
-                simpleVectorStore.save(new File("chat-pdf.json"));
-            }
+//            if(vectorStore != null && vectorStore instanceof SimpleVectorStore simpleVectorStore) {
+//                simpleVectorStore.save(new File("chat-pdf.json"));
+//            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -100,6 +101,6 @@ public class FileServiceImpl implements IFileService {
         List<Document> documents = reader.read();
         documents.forEach(document -> document.getMetadata().put("chat_id", chatId));
         // 3.写入向量库
-        vectorStore.add(documents);
+        vectorStoreByMongo.add(documents);
     }
 }

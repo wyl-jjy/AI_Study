@@ -85,10 +85,10 @@ public class CommanConfig {
                 .build();
     }
 
-    @Bean
-    public VectorStore vectorStore(OllamaEmbeddingModel ollamaEmbeddingModel) {
-        return SimpleVectorStore.builder(ollamaEmbeddingModel).build();
-    }
+//    @Bean
+//    public VectorStore vectorStore(OllamaEmbeddingModel ollamaEmbeddingModel) {
+//        return SimpleVectorStore.builder(ollamaEmbeddingModel).build();
+//    }
 
     @Bean("pdfChatClient")
     public ChatClient pdfChatClient(

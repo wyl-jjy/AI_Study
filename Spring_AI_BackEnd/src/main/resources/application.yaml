@@ -15,6 +15,14 @@ spring:
         model: qwen3-embedding:0.6b
         options:
           keep-alive: 30m
+    vectorstore:
+      mongodb:
+        initialize-schema: true #是否自动创建索引
+        collection-name: springAi_vector_store #指定数据存哪个集合
+        index-name: springAi_vector_index #指定用哪个索引来搜
+        path-name: embedding #指定向量存在哪个字段
+        metadata-fields-to-filter: chat_id #声明哪些元数据字段可过滤
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/spring_ai?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true&useSSL=false
@@ -22,7 +30,7 @@ spring:
     password: root
   data:
     mongodb:
-      uri: mongodb://localhost:27017/Spring_AI
+      uri: mongodb+srv://wangyulong9316_db_user:CM3T8fyoJKnRQh0e@springaistudy.7tsej10.mongodb.net/spring_ai?retryWrites=true&w=majority
 logging:
   level:
     org.springframework.ai: info # 设为 debug 会打印 eval-duration 等元数据噪音
