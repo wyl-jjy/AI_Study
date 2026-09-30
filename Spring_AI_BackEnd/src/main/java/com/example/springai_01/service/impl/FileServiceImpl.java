@@ -1,6 +1,12 @@
 package com.example.springai_01.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.springai_01.Entity.Po.ChatDocRelate;
+import com.example.springai_01.config.MinioConfig;
+import com.example.springai_01.mapper.ChatDocRelateMapper;
 import com.example.springai_01.service.IFileService;
+import io.minio.*;
+import io.minio.errors.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -11,28 +17,100 @@ import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl implements IFileService {
 
-//    private final VectorStore vectorStore;
+    //    private final VectorStore vectorStore;
     private final VectorStoreByMongo vectorStoreByMongo;
 
     // 会话id 与 文件名的对应关系，方便查询会话历史时重新加载文件
     private final Properties chatFiles = new Properties();
+
+    private final MinioClient minioClient;
+
+    private final ChatDocRelateMapper chatDocRelateMapper;
+
+    @Value("${minio.bucket-name}")
+    private String bucket;
+
+
+    @Override
+    public boolean saveByMinIO(String chatId, MultipartFile file) {
+        try {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucket)
+                            .object(file.getOriginalFilename())
+                            .contentType(file.getContentType())
+                            .stream(file.getInputStream(), file.getSize(), -1)
+                            .build()
+            );
+        } catch (Exception e) {
+            return false;
+        }
+        //保存映射关系
+        boolean res = chatDocRelateMapper.insertOrUpdate(ChatDocRelate.builder()
+                .chatId(chatId)
+                .docName(file.getOriginalFilename())
+                .build());
+
+        writeToVectorStore(file.getResource(), chatId);
+        return res;
+    }
+
+    @Override
+    public Resource getByJDBC(String chatId) {
+        QueryWrapper<ChatDocRelate> listQueryWrapper = new QueryWrapper<>();
+        List<ChatDocRelate> chatDocRelates = chatDocRelateMapper.selectList(listQueryWrapper
+                .lambda()
+                .eq(ChatDocRelate::getChatId, chatId));
+        List<String> fileNameList = chatDocRelates.stream()
+                .map(ChatDocRelate::getDocName)
+                .toList();
+
+        List<Resource> resources = new ArrayList<>();
+        try {
+            for (String filename : fileNameList) {
+                GetObjectResponse response = minioClient.getObject(
+                        GetObjectArgs.builder()
+                                .bucket(bucket)
+                                .object(filename)
+                                .build()
+                );
+                resources.add(new InputStreamResource(response){
+                    @Override
+                    public String getFilename() {
+                        return filename;
+                    }
+                });
+            }
+        } catch (Exception e) {
+            log.error("查询Minio失败");
+        }
+        //TODO 暂时获取一个，后续实现获取所有
+        return resources.get(0);
+    }
 
     @Override
     public boolean save(String chatId, Resource resource) {

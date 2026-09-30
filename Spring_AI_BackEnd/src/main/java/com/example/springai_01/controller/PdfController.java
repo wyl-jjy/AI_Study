@@ -19,6 +19,7 @@ import reactor.core.publisher.Flux;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -43,7 +44,8 @@ public class PdfController {
                 return Result.fail("只能上传PDF文件！");
             }
             // 2.保存文件
-            boolean success = fileService.save(chatId, file.getResource());
+            boolean success=fileService.saveByMinIO(chatId,file);
+           // boolean success = fileService.save(chatId, file.getResource());
             if(! success) {
                 return Result.fail("保存文件失败！");
             }
@@ -60,7 +62,8 @@ public class PdfController {
     @GetMapping("/file/{chatId}")
     public ResponseEntity<Resource> download(@PathVariable("chatId") String chatId) throws IOException {
         // 1.读取文件
-        Resource resource = fileService.getFile(chatId);
+        // Resource resource = fileService.getFile(chatId);
+        Resource resource = fileService.getByJDBC(chatId);
         if (!resource.exists()) {
             return ResponseEntity.notFound().build();
         }

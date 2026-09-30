@@ -22,7 +22,6 @@ spring:
         index-name: springAi_vector_index #指定用哪个索引来搜
         path-name: embedding #指定向量存在哪个字段
         metadata-fields-to-filter: chat_id #声明哪些元数据字段可过滤
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/spring_ai?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true&useSSL=false
@@ -35,3 +34,8 @@ logging:
   level:
     org.springframework.ai: info # 设为 debug 会打印 eval-duration 等元数据噪音
     com.example.springai_01: debug # 本项目的日志级别
+minio:
+  endpoint: http://127.0.0.1:9000  # 你启动的 MinIO 地址
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: spring-ai-rag-bucket

@@ -1,6 +1,9 @@
 package com.example.springai_01.service;
 
 import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface IFileService {
     /**
@@ -17,4 +20,8 @@ public interface IFileService {
      * @return 找到的文件
      */
     Resource getFile(String chatId);
+
+    boolean saveByMinIO(String chatId, MultipartFile file);
+
+    Resource getByJDBC(String chatId);
 }
